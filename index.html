@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#ffffff">
     <title>Sue & Bert | August 1, 1981</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,8 +17,11 @@
             --paper: #ffffff;
         }
 
+        html, body {
+            background-color: #ffffff !important;
+        }
+
         body {
-            background-color: var(--paper);
             color: var(--ink);
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
@@ -251,7 +255,7 @@
         }
     </style>
 </head>
-<body class="antialiased flex flex-col min-h-screen">
+<body class="antialiased flex flex-col min-h-screen bg-white">
 
     <!-- Custom Cursors -->
     <div class="cursor-dot"></div>
