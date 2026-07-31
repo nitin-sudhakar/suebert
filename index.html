@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sue & Bert | Since 1981</title>
+    <meta name="color-scheme" content="light">
+    <title>Sue & Bert | August 1, 1981</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --ink: #111111;
@@ -20,13 +22,19 @@
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            /* Hide default cursor on desktop to use custom ink cursor */
+            cursor: none; 
+        }
+
+        /* Re-enable default cursor on touch devices */
+        @media (hover: none) and (pointer: coarse) {
+            body { cursor: auto; }
         }
 
         h1, h2, h3, .serif-font {
             font-family: 'Playfair Display', serif;
         }
 
-        /* Fluid Typography & Spacing */
         .title-text {
             font-size: clamp(3rem, 8vw, 6rem);
             line-height: 1.1;
@@ -37,18 +45,72 @@
             letter-spacing: 0.1em;
         }
 
-        /* Image Styling to ensure ink-like appearance */
-        .sketch-image {
-            filter: grayscale(100%) contrast(110%);
-            mix-blend-mode: multiply; /* This makes the white background of the sketch completely transparent/seamless */
-            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .sketch-container:hover .sketch-image {
-            transform: scale(1.03);
+        .cursor-dot, .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+            mix-blend-mode: difference; /* Makes it visible over both black and white */
+            background-color: white; /* Inverted by mix-blend-mode to look black */
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
         }
 
-        /* Minimalist Input Box */
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid white;
+            background-color: transparent;
+            transition: width 0.2s ease-out, height 0.2s ease-out, transform 0.1s;
+        }
+
+        /* Hover states for the cursor */
+        body.cursor-hover .cursor-dot {
+            width: 0px;
+            height: 0px;
+        }
+
+        body.cursor-hover .cursor-outline {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: invert(1);
+        }
+
+        /* Hide custom cursor on mobile */
+        @media (max-width: 768px) {
+            .cursor-dot, .cursor-outline { display: none; }
+        }
+
+        .parallax-wrapper {
+            will-change: transform;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .sketch-container {
+            perspective: 1000px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .sketch-image {
+            filter: grayscale(100%) contrast(120%) brightness(105%);
+            mix-blend-mode: multiply;
+            /* Smooth transition for when the mouse leaves */
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); 
+            will-change: transform;
+        }
+
         .ink-input {
             border: none;
             border-bottom: 1px solid var(--ink);
@@ -60,23 +122,15 @@
             max-width: 250px;
             outline: none;
             letter-spacing: 0.2em;
-            transition: border-color 0.3s ease;
+            transition: border-color 0.4s ease, transform 0.3s ease;
             font-family: 'Playfair Display', serif;
-        }
-
-        .ink-input::placeholder {
-            letter-spacing: 0.05em;
-            font-size: 1rem;
-            color: #9ca3af;
-            font-family: 'Inter', sans-serif;
-            font-style: italic;
         }
 
         .ink-input:focus {
             border-bottom: 2px solid var(--ink);
+            transform: scale(1.02);
         }
 
-        /* Custom minimal button */
         .ink-btn {
             position: relative;
             display: inline-block;
@@ -87,9 +141,8 @@
             text-transform: uppercase;
             letter-spacing: 0.1em;
             font-size: 0.875rem;
-            cursor: pointer;
             overflow: hidden;
-            transition: color 0.4s ease;
+            transition: color 0.4s ease, transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .ink-btn::before {
@@ -101,30 +154,43 @@
             height: 100%;
             background: var(--ink);
             z-index: -1;
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scaleY(0);
+            transform-origin: bottom;
+            transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         .ink-btn:hover {
             color: var(--paper);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -10px rgba(0,0,0,0.3);
         }
 
         .ink-btn:hover::before {
-            transform: scaleX(1);
-            transform-origin: left;
+            transform: scaleY(1);
         }
 
-        /* Animations */
         .fade-up {
             opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 1s ease-out, transform 1s ease-out;
+            transform: translateY(50px);
+            filter: blur(10px); /* Ink unblurring effect */
+            transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                        transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                        filter 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+            will-change: opacity, transform, filter;
         }
 
         .fade-up.visible {
             opacity: 1;
             transform: translateY(0);
+            filter: blur(0);
+        }
+
+        .draw-line {
+            height: 0;
+            transition: height 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .draw-line.visible {
+            height: 8rem; /* equivalent to h-32 */
         }
 
         .delay-100 { transition-delay: 100ms; }
@@ -137,28 +203,14 @@
             20%, 60% { transform: translateX(-5px); }
             40%, 80% { transform: translateX(5px); }
         }
+        .shake-animation { animation: shake 0.4s ease-in-out; }
 
-        .shake-animation {
-            animation: shake 0.4s ease-in-out;
-        }
-
-        @keyframes drawLine {
-            to { stroke-dashoffset: 0; }
-        }
-
-        .line-drawing {
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-            animation: drawLine 3s ease-in-out forwards;
-        }
-
-        /* Modal styling */
         .modal-overlay {
-            background-color: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(5px);
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
         .modal-overlay.active {
@@ -166,7 +218,18 @@
             pointer-events: all;
         }
 
-        /* Letter reveal animation */
+        .modal-content {
+            transform: scale(0.95) translateY(20px);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transition-delay: 0.1s;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
         .letter-content {
             display: none;
             opacity: 0;
@@ -180,13 +243,8 @@
             transform: translateY(0);
         }
 
-        /* Custom scrollbar for modal */
-        .modal-scroll::-webkit-scrollbar {
-            width: 4px;
-        }
-        .modal-scroll::-webkit-scrollbar-track {
-            background: transparent;
-        }
+        .modal-scroll::-webkit-scrollbar { width: 4px; }
+        .modal-scroll::-webkit-scrollbar-track { background: transparent; }
         .modal-scroll::-webkit-scrollbar-thumb {
             background-color: #d1d5db;
             border-radius: 4px;
@@ -195,70 +253,70 @@
 </head>
 <body class="antialiased flex flex-col min-h-screen">
 
-    <main class="flex-grow">
+    <!-- Custom Cursors -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <main class="flex-grow overflow-hidden w-full bg-white">
         <!-- Hero Section -->
-        <section class="min-h-screen flex flex-col items-center justify-center px-6 relative">
-            <!-- Decorative SVG Line -->
-            <div class="absolute top-0 w-px h-32 bg-black opacity-20 fade-up"></div>
+        <section class="w-full min-h-[100dvh] flex flex-col items-center justify-center relative">
+            <!-- Top Line (Absolutely Centered) -->
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1px] bg-black opacity-20 draw-line fade-up"></div>
             
-            <div class="text-center mt-24 max-w-4xl mx-auto space-y-6">
-                <p class="subtitle-text fade-up uppercase text-gray-500 tracking-widest">Celebrating 45 Years</p>
-                <h1 class="title-text fade-up delay-100 font-medium">Sue & Bert</h1>
+            <div class="text-center max-w-4xl mx-auto space-y-6 relative z-10 px-6 mt-12">
+                <!-- Optical alignment fix: translate-x gently nudges the text to offset the right-heavy tracking -->
+                <p class="subtitle-text fade-up uppercase text-gray-500 tracking-widest translate-x-[0.05em]">Celebrating 45 Years</p>
+                <h1 class="title-text fade-up delay-100 font-medium tracking-tight">Sue & Bert</h1>
                 
                 <div class="fade-up delay-200 py-8">
-                    <span class="serif-font italic text-2xl">August 1, 1981</span>
+                    <span class="serif-font italic text-2xl text-gray-800">August 1, 1981</span>
                 </div>
             </div>
+        </section>
 
-            <!-- Scroll indicator -->
-            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 fade-up delay-400 flex flex-col items-center">
-                <span class="text-xs uppercase tracking-widest mb-2 text-gray-400">Scroll</span>
-                <div class="w-px h-16 bg-black opacity-20"></div>
+        <!-- Sketch 1 Section -->
+        <section class="w-full py-20 md:py-32 px-6 flex justify-center">
+            <div class="parallax-wrapper w-full max-w-4xl" data-speed="0.1">
+                <div class="sketch-container fade-up w-full">
+                    <img src="https://i.imgur.com/y8IixWT.jpeg" alt="Sketch of Sue and Bert" class="sketch-image w-full h-auto max-w-lg object-contain mx-auto">
+                </div>
             </div>
         </section>
 
-        <!-- First Sketch Section -->
-        <section class="py-24 px-6 max-w-4xl mx-auto flex justify-center">
-            <div class="sketch-container fade-up w-full flex flex-col items-center">
-                <!-- Removed borders and shadows for a seamless ink-on-paper look -->
-                <img src="https://i.imgur.com/y8IixWT.jpeg" alt="Sketch of Sue and Bert" class="sketch-image w-full h-auto max-w-lg object-contain" onerror="this.onerror=null; this.src='https://placehold.co/600x800/white/black?text=First+Sketch';">
-            </div>
-        </section>
-
-        <!-- Letters Section -->
-        <section class="py-24 px-6 flex flex-col items-center justify-center relative z-10">
-            <svg class="w-8 h-8 mb-8 text-gray-300 fade-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+        <!-- Button Section -->
+        <section class="w-full pt-20 pb-[15rem] md:pt-32 md:pb-[25rem] px-6 flex flex-col items-center justify-center relative z-10">
+            <svg class="w-8 h-8 mb-10 text-gray-300 fade-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
 
             <h2 class="serif-font text-3xl md:text-4xl mb-12 fade-up text-center">Words for You Both</h2>
             
             <div class="flex flex-col sm:flex-row gap-6 w-full justify-center items-center fade-up delay-100">
-                <button onclick="openModal()" class="ink-btn w-full sm:w-64 text-center">
+                <button onclick="openModal()" class="ink-btn interactive-hover w-full sm:w-64 text-center">
                     Read the Letter
                 </button>
             </div>
         </section>
 
-        <!-- Second Sketch Section -->
-        <section class="py-24 px-6 max-w-4xl mx-auto flex justify-center mb-12">
-            <div class="sketch-container fade-up w-full flex flex-col items-center">
-                <!-- Removed borders and shadows for a seamless ink-on-paper look -->
-                <img src="https://i.imgur.com/fu5iYGJ.jpeg" alt="Sketch of Bert and Sue" class="sketch-image w-full h-auto max-w-lg object-contain" onerror="this.onerror=null; this.src='https://placehold.co/600x800/white/black?text=Second+Sketch';">
+        <!-- Sketch 2 Section -->
+        <section class="w-full py-20 md:py-32 px-6 flex justify-center mb-8">
+            <div class="parallax-wrapper w-full max-w-4xl" data-speed="0.15">
+                <div class="sketch-container fade-up w-full">
+                    <img src="https://i.imgur.com/fu5iYGJ.jpeg" alt="Sketch of Bert and Sue" class="sketch-image w-full h-auto max-w-lg object-contain mx-auto">
+                </div>
             </div>
         </section>
     </main>
 
-    <footer class="py-16 text-center flex flex-col items-center space-y-4 fade-up">
-        <p class="text-sm text-gray-400 tracking-widest uppercase">Celebrating 45 Years</p>
-        <p class="serif-font italic text-2xl">August 1, 2026</p>
+    <footer class="w-full py-16 md:py-24 text-center flex flex-col items-center space-y-4 fade-up">
+        <p class="text-sm text-gray-400 tracking-widest uppercase translate-x-[0.05em]">Celebrating 45 Years</p>
+        <p class="serif-font italic text-2xl text-gray-800">August 1, 2026</p>
     </footer>
 
-    <!-- Password Modal -->
-    <div id="passwordModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-        <div class="bg-white p-6 sm:p-10 md:p-14 max-w-2xl w-full text-center shadow-2xl relative border border-gray-200 max-h-[90vh] overflow-y-auto modal-scroll">
-            <!-- Close Button -->
-            <button onclick="closeModal()" class="absolute top-4 right-4 md:top-6 md:right-6 text-gray-400 hover:text-black transition-colors z-10 bg-white rounded-full p-1">
+    <div id="passwordModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 cursor-auto">
+        <div class="modal-content bg-white p-6 sm:p-10 md:p-14 max-w-2xl w-full text-center shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] relative border border-gray-100 max-h-[90vh] overflow-y-auto modal-scroll">
+            
+            <button onclick="closeModal()" class="interactive-hover absolute top-2 right-2 sm:top-4 sm:right-4 md:top-6 md:right-6 text-gray-400 hover:text-black transition-colors z-10 bg-white/90 backdrop-blur-sm rounded-full p-3">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -266,42 +324,45 @@
             </button>
 
             <!-- Password Entry Form -->
-            <div id="passwordForm" class="space-y-8 py-4 md:py-8">
-                <svg class="w-8 h-8 mx-auto text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <div id="passwordForm" class="space-y-10 py-8 md:py-12 pb-12">
+                <svg class="w-8 h-8 mx-auto text-black opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                 </svg>
-                <h3 class="serif-font text-2xl" id="modalTitle">Unlock Letter</h3>
-                <div class="relative">
-                    <input type="password" id="yearInput" class="ink-input" placeholder="enter the year" autocomplete="off">
-                    <p id="errorMessage" class="absolute -bottom-6 left-0 w-full text-red-500 text-xs tracking-wider opacity-0 transition-opacity">Incorrect year</p>
+                <div class="space-y-3">
+                    <h3 class="serif-font text-3xl" id="modalTitle">Unlock Letter</h3>
                 </div>
-                <button onclick="checkPassword()" class="ink-btn mt-4">Read</button>
+                
+                <div class="relative max-w-xs mx-auto mt-8">
+                    <!-- Changed text-sm to text-[16px] for mobile to prevent iOS Safari auto-zoom on focus, while keeping it small on md screens -->
+                    <input type="password" id="yearInput" class="ink-input interactive-hover text-[16px] md:text-sm placeholder:text-[16px] md:placeholder:text-sm" placeholder="enter the year" autocomplete="off">
+                    <p id="errorMessage" class="absolute -bottom-8 left-0 w-full text-red-500 text-xs tracking-wider opacity-0 transition-opacity">Incorrect year</p>
+                </div>
+                
+                <button onclick="checkPassword()" class="ink-btn interactive-hover mt-8">Read</button>
             </div>
 
-            <!-- Single Letter for Sue and Bert -->
-            <div id="letter-combined" class="letter-content text-left">
+            <!-- Single Letter Container -->
+            <div id="letter-combined" class="letter-content text-left py-4">
                 <div id="letter-text-container">
+                    <!-- Default Letter (Fallback if GitHub fetch fails) -->
                     <h3 class="serif-font text-2xl md:text-3xl mb-8 border-b border-gray-100 pb-4">Dear Sue & Bert,</h3>
-                    <p class="leading-relaxed text-gray-700 mb-5">
-                        Happy Anniversary! Today is a wonderful day to celebrate the two of you and the beautiful life you have built together. Watching your partnership is a sweet reminder of what true love and companionship look like.
-                    </p>
-                    <p class="leading-relaxed text-gray-700 mb-5">
-                        It is so special that you both fell in love at such a young age. Your whole journey together is such a sweet story. I feel so happy thinking about how the cute young Bert and the beautiful young Sue met, fell in love, and how he gathered the courage to propose by the river. It is lovely to see how those early days grew into the wonderful life you share today.
-                    </p>
-                    <p class="leading-relaxed text-gray-700 mb-5">
-                        Together, you have created a warm and welcoming home filled with happiness, comfort, and kindness. It is really lovely to see a couple who care so much for each other and bring out the best in one another.
-                    </p>
-                    <p class="leading-relaxed text-gray-700 mb-5">
-                        People often talk about what makes a place special, and I think it is simply the goodness of the people. You both have such kind and generous hearts. Your natural friendliness makes everyone around you feel comfortable, safe, and at home.
-                    </p>
-                    <p class="leading-relaxed text-gray-700 mb-5">
-                        You both mean so much to me, and I feel so lucky to have you in my life. You bring so much joy and warmth to the people around you just by being yourselves.
-                    </p>
-                    <p class="leading-relaxed text-gray-700 mb-5">
-                        Wishing you a very happy anniversary filled with sweet memories, laughter, and many more happy years together.
-                    </p>
-                    <p class="serif-font italic text-xl mt-8 pt-6 border-t border-gray-50">With love,<br>Nitin</p>
+                    
+                    <p class="leading-relaxed text-gray-700 mb-6">Happy Anniversary!</p>
+                    
+                    <p class="leading-relaxed text-gray-700 mb-6">Today is a wonderful day to celebrate the two of you and the beautiful life you have built together. Watching your partnership is a sweet reminder of what true love and companionship look like.</p>
+                    
+                    <p class="leading-relaxed text-gray-700 mb-6">It is so special that you both fell in love at such a young age. Your whole journey together is such a sweet story. I feel so happy thinking about how the cute young Bert and the beautiful young Sue met, fell in love, and how he gathered the courage to propose by the river. It is lovely to see how those early days grew into the wonderful life you share today.</p>
+                    
+                    <p class="leading-relaxed text-gray-700 mb-6">Together, you have created a warm and welcoming home filled with happiness, comfort, and kindness. It is really lovely to see a couple who care so much for each other and bring out the best in one another.</p>
+                    
+                    <p class="leading-relaxed text-gray-700 mb-6">People often talk about what makes a place special, and I think it is simply the goodness of the people. You both have such kind and generous hearts. Your natural friendliness makes everyone around you feel comfortable, safe, and at home.</p>
+                    
+                    <p class="leading-relaxed text-gray-700 mb-6">You both mean so much to me, and I feel so lucky to have you in my life. You bring so much joy and warmth to the people around you just by being yourselves.</p>
+                    
+                    <p class="leading-relaxed text-gray-700 mb-6">Wishing you a very happy anniversary filled with sweet memories, laughter, and many more happy years together.</p>
+                    
+                    <p class="serif-font italic text-xl mt-10 pt-6 border-t border-gray-50">With love,<br>Nitin</p>
                 </div>
             </div>
 
@@ -309,12 +370,80 @@
     </div>
 
     <script>
-        const correctYear = '1981';
+        // --- Custom Cursor Logic ---
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+            
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+            
+            // Add a tiny delay to the outline for a fluid effect
+            setTimeout(() => {
+                cursorOutline.style.left = `${posX}px`;
+                cursorOutline.style.top = `${posY}px`;
+            }, 50);
+        });
 
-        // Attempt to load external text file if it exists on the server (like GitHub Pages)
-        async function loadExternalLetters() {
+        // Add hover effect for interactive elements
+        const interactives = document.querySelectorAll('.interactive-hover, button, input');
+        interactives.forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+        });
+
+        // --- 3D Image Tilt Effect ---
+        const sketches = document.querySelectorAll('.sketch-container');
+        sketches.forEach(container => {
+            const img = container.querySelector('.sketch-image');
+            
+            container.addEventListener('mousemove', (e) => {
+                // Prevent tilt on touch devices so they don't get stuck on tap
+                if (window.matchMedia("(hover: none)").matches) return;
+                
+                // Calculate mouse position relative to the center of the image
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX - rect.left; // x position within the element.
+                const y = e.clientY - rect.top;  // y position within the element.
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Calculate rotation (max 10 degrees)
+                const rotateX = ((y - centerY) / centerY) * -10;
+                const rotateY = ((x - centerX) / centerX) * 10;
+                
+                img.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+            });
+            
+            container.addEventListener('mouseleave', () => {
+                if (window.matchMedia("(hover: none)").matches) return;
+                // Reset transform when mouse leaves
+                img.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
+            });
+        });
+
+        // --- Parallax Scroll Effect ---
+        window.addEventListener('scroll', () => {
+            // Disable parallax on mobile phones to ensure smooth scrolling
+            if (window.innerWidth < 768) return;
+
+            const scrolled = window.pageYOffset;
+            const parallaxWrappers = document.querySelectorAll('.parallax-wrapper');
+            
+            parallaxWrappers.forEach(wrapper => {
+                const speed = wrapper.getAttribute('data-speed');
+                const yPos = -(scrolled * speed);
+                wrapper.style.transform = `translateY(${yPos}px)`;
+            });
+        });
+
+        // --- GitHub External Letter Loader ---
+        async function loadExternalLetter() {
             try {
-                // Look for letter.txt in the same folder
                 const response = await fetch('letter.txt');
                 if (response.ok) {
                     const text = await response.text();
@@ -323,97 +452,94 @@
             } catch(e) { console.log('Using default letter embedded in HTML.'); }
         }
 
-        // Helper to convert plain text with line breaks into styled HTML paragraphs
         function formatTextToHTML(text) {
-            // Split the text by double newlines to create separate paragraphs
             const paragraphs = text.split('\n\n').filter(p => p.trim() !== '');
             let html = '';
             
             for (let i = 0; i < paragraphs.length; i++) {
                 if (i === 0) {
-                    // Make the first paragraph the heading
                     html += `<h3 class="serif-font text-2xl md:text-3xl mb-8 border-b border-gray-100 pb-4">${paragraphs[i].replace(/\n/g, '<br>')}</h3>`;
                 } else if (i === paragraphs.length - 1) {
-                    // Make the last paragraph the signature
-                    html += `<p class="serif-font italic text-xl mt-8 pt-6 border-t border-gray-50">${paragraphs[i].replace(/\n/g, '<br>')}</p>`;
+                    html += `<p class="serif-font italic text-xl mt-10 pt-6 border-t border-gray-50">${paragraphs[i].replace(/\n/g, '<br>')}</p>`;
                 } else {
-                    html += `<p class="leading-relaxed text-gray-700 mb-5">${paragraphs[i].replace(/\n/g, '<br>')}</p>`;
+                    html += `<p class="leading-relaxed text-gray-700 mb-6">${paragraphs[i].replace(/\n/g, '<br>')}</p>`;
                 }
             }
             return html;
         }
         
-        // Load external letters on startup
-        loadExternalLetters();
+        loadExternalLetter();
 
         // --- Intersection Observer for Scroll Animations ---
         const observerOptions = {
             root: null,
-            rootMargin: '0px',
-            threshold: 0.15
+            rootMargin: '-50px',
+            threshold: 0.1
         };
 
-        const observer = new IntersectionObserver((entries, observer) => {
+        const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
-                    // Optional: Stop observing once animated
-                    // observer.unobserve(entry.target);
                 }
             });
         }, observerOptions);
 
-        document.querySelectorAll('.fade-up').forEach(element => {
+        document.querySelectorAll('.fade-up, .draw-line').forEach(element => {
             observer.observe(element);
         });
 
         // --- Modal & Password Logic ---
+        const correctYear = '1981';
         const modal = document.getElementById('passwordModal');
         const passwordForm = document.getElementById('passwordForm');
         const yearInput = document.getElementById('yearInput');
         const errorMessage = document.getElementById('errorMessage');
-        const modalTitle = document.getElementById('modalTitle');
 
         function openModal() {
-            modalTitle.innerText = `Unlock Letter`;
-            
-            // Reset states
             yearInput.value = '';
             yearInput.classList.remove('shake-animation');
             errorMessage.style.opacity = '0';
             
-            // Hide letter, show form
             const letterContent = document.getElementById('letter-combined');
             if(letterContent) {
                 letterContent.classList.remove('active');
-                setTimeout(() => letterContent.style.display = 'none', 500); // Wait for fade out
+                setTimeout(() => letterContent.style.display = 'none', 500);
             }
             
             passwordForm.style.display = 'block';
             setTimeout(() => {
                 passwordForm.style.opacity = '1';
-                passwordForm.style.transform = 'translateY(0)';
+                passwordForm.style.transform = 'scale(1) translateY(0)';
             }, 50);
 
             modal.classList.add('active');
             
-            // Auto focus on input after transition
-            setTimeout(() => yearInput.focus(), 500);
+            // Re-enable default cursor for the modal area so inputs work naturally on all devices
+            document.body.style.cursor = 'auto';
+            document.querySelector('.cursor-dot').style.opacity = '0';
+            document.querySelector('.cursor-outline').style.opacity = '0';
+            
+            setTimeout(() => yearInput.focus(), 600);
         }
 
         function closeModal() {
             modal.classList.remove('active');
+            
+            // Restore custom cursor
+            setTimeout(() => {
+                document.body.style.cursor = 'none';
+                document.querySelector('.cursor-dot').style.opacity = '1';
+                document.querySelector('.cursor-outline').style.opacity = '1';
+            }, 400);
         }
 
         function checkPassword() {
             const val = yearInput.value.trim();
             if (val === correctYear) {
-                // Success
                 revealLetter();
             } else {
-                // Error
                 yearInput.classList.remove('shake-animation');
-                // Trigger reflow to restart animation
                 void yearInput.offsetWidth;
                 yearInput.classList.add('shake-animation');
                 
@@ -425,33 +551,25 @@
         }
 
         function revealLetter() {
-            // Fade out form
             passwordForm.style.opacity = '0';
-            passwordForm.style.transform = 'translateY(-20px)';
+            passwordForm.style.transform = 'scale(0.95) translateY(-20px)';
             
             setTimeout(() => {
                 passwordForm.style.display = 'none';
                 
-                // Show combined letter
                 const letterEl = document.getElementById('letter-combined');
                 letterEl.style.display = 'block';
-                
-                // Trigger reflow
                 void letterEl.offsetWidth;
-                
-                // Add active class for fade in
                 letterEl.classList.add('active');
-            }, 400); // Wait for form fade out
+            }, 600); 
         }
 
-        // Allow pressing Enter to submit password
         yearInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 checkPassword();
             }
         });
 
-        // Close modal on clicking outside the white box
         modal.addEventListener('click', function(e) {
             if (e.target === modal) {
                 closeModal();
