@@ -179,6 +179,18 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* Custom scrollbar for modal */
+        .modal-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .modal-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .modal-scroll::-webkit-scrollbar-thumb {
+            background-color: #d1d5db;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body class="antialiased flex flex-col min-h-screen">
@@ -221,12 +233,9 @@
 
             <h2 class="serif-font text-3xl md:text-4xl mb-12 fade-up text-center">Words for You Both</h2>
             
-            <div class="flex flex-col sm:flex-row gap-6 w-full max-w-[16rem] sm:max-w-none justify-center items-center fade-up delay-100">
-                <button onclick="openModal('sue')" class="ink-btn w-full sm:w-56 text-center">
-                    Letter for Sue
-                </button>
-                <button onclick="openModal('bert')" class="ink-btn w-full sm:w-56 text-center">
-                    Letter for Bert
+            <div class="flex flex-col sm:flex-row gap-6 w-full justify-center items-center fade-up delay-100">
+                <button onclick="openModal()" class="ink-btn w-full sm:w-64 text-center">
+                    Read the Letter
                 </button>
             </div>
         </section>
@@ -246,10 +255,10 @@
     </footer>
 
     <!-- Password Modal -->
-    <div id="passwordModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center px-6">
-        <div class="bg-white p-10 md:p-16 max-w-lg w-full text-center shadow-2xl relative border border-gray-200">
+    <div id="passwordModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+        <div class="bg-white p-6 sm:p-10 md:p-14 max-w-2xl w-full text-center shadow-2xl relative border border-gray-200 max-h-[90vh] overflow-y-auto modal-scroll">
             <!-- Close Button -->
-            <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-400 hover:text-black transition-colors">
+            <button onclick="closeModal()" class="absolute top-4 right-4 md:top-6 md:right-6 text-gray-400 hover:text-black transition-colors z-10 bg-white rounded-full p-1">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -257,7 +266,7 @@
             </button>
 
             <!-- Password Entry Form -->
-            <div id="passwordForm" class="space-y-8 py-8">
+            <div id="passwordForm" class="space-y-8 py-4 md:py-8">
                 <svg class="w-8 h-8 mx-auto text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -270,31 +279,29 @@
                 <button onclick="checkPassword()" class="ink-btn mt-4">Read</button>
             </div>
 
-            <!-- Letter for Sue -->
-            <div id="letter-sue" class="letter-content text-left space-y-6">
-                <h3 class="serif-font text-3xl mb-8 border-b border-gray-100 pb-4">Dearest Sue,</h3>
-                <div id="sue-text-container">
-                    <p class="leading-relaxed text-gray-700">
-                        It feels like just yesterday we were celebrating your special day on August 1, 1981. Over the past forty-five years, I've watched you build a life full of warmth, resilience, and profound love. Your steadfast heart has not only anchored your marriage but also brought so much joy to everyone around you.
+            <!-- Single Letter for Sue and Bert -->
+            <div id="letter-combined" class="letter-content text-left">
+                <div id="letter-text-container">
+                    <h3 class="serif-font text-2xl md:text-3xl mb-8 border-b border-gray-100 pb-4">Dear Sue & Bert,</h3>
+                    <p class="leading-relaxed text-gray-700 mb-5">
+                        Happy Anniversary! Today is a wonderful day to celebrate the two of you and the beautiful life you have built together. Watching your partnership is a sweet reminder of what true love and companionship look like.
                     </p>
-                    <p class="leading-relaxed text-gray-700">
-                        You have always been such a beacon of light and a wonderful friend. As you celebrate this beautiful Sapphire anniversary, I hope you take a moment to look back at the incredible legacy of love you and Bert have created together.
+                    <p class="leading-relaxed text-gray-700 mb-5">
+                        It is so special that you both fell in love at such a young age. Your whole journey together is such a sweet story. I feel so happy thinking about how the cute young Bert and the beautiful young Sue met, fell in love, and how he gathered the courage to propose by the river. It is lovely to see how those early days grew into the wonderful life you share today.
                     </p>
-                    <p class="serif-font italic text-xl mt-8 pt-8">With so much love,<br>Your Friend</p>
-                </div>
-            </div>
-
-            <!-- Letter for Bert -->
-            <div id="letter-bert" class="letter-content text-left space-y-6">
-                <h3 class="serif-font text-3xl mb-8 border-b border-gray-100 pb-4">Dear Bert,</h3>
-                <div id="bert-text-container">
-                    <p class="leading-relaxed text-gray-700">
-                        Forty-five years! I have always admired the way you look at Sue, a gaze that hasn't changed since that summer day in 1981. You have been a pillar of strength, a caring partner, and a source of endless laughter for your family and your friends. 
+                    <p class="leading-relaxed text-gray-700 mb-5">
+                        Together, you have created a warm and welcoming home filled with happiness, comfort, and kindness. It is really lovely to see a couple who care so much for each other and bring out the best in one another.
                     </p>
-                    <p class="leading-relaxed text-gray-700">
-                        Witnessing your journey together has been an absolute privilege. Thank you for being such a great friend and for showing us all what a true partnership looks like. Happy 45th Anniversary, here is to celebrating a truly remarkable man.
+                    <p class="leading-relaxed text-gray-700 mb-5">
+                        People often talk about what makes a place special, and I think it is simply the goodness of the people. You both have such kind and generous hearts. Your natural friendliness makes everyone around you feel comfortable, safe, and at home.
                     </p>
-                    <p class="serif-font italic text-xl mt-8 pt-8">Warmly,<br>Your Friend</p>
+                    <p class="leading-relaxed text-gray-700 mb-5">
+                        You both mean so much to me, and I feel so lucky to have you in my life. You bring so much joy and warmth to the people around you just by being yourselves.
+                    </p>
+                    <p class="leading-relaxed text-gray-700 mb-5">
+                        Wishing you a very happy anniversary filled with sweet memories, laughter, and many more happy years together.
+                    </p>
+                    <p class="serif-font italic text-xl mt-8 pt-6 border-t border-gray-50">With love,<br>Nitin</p>
                 </div>
             </div>
 
@@ -302,29 +309,18 @@
     </div>
 
     <script>
-        // Store current active letter target
-        let currentTarget = '';
         const correctYear = '1981';
 
-        // Attempt to load external text files if they exist on the server (like GitHub Pages)
+        // Attempt to load external text file if it exists on the server (like GitHub Pages)
         async function loadExternalLetters() {
             try {
-                // Look for sue.txt in the same folder
-                const sueResponse = await fetch('sue.txt');
-                if (sueResponse.ok) {
-                    const sueText = await sueResponse.text();
-                    document.getElementById('sue-text-container').innerHTML = formatTextToHTML(sueText);
+                // Look for letter.txt in the same folder
+                const response = await fetch('letter.txt');
+                if (response.ok) {
+                    const text = await response.text();
+                    document.getElementById('letter-text-container').innerHTML = formatTextToHTML(text);
                 }
-            } catch(e) { console.log('Using default Sue letter embedded in HTML.'); }
-
-            try {
-                // Look for bert.txt in the same folder
-                const bertResponse = await fetch('bert.txt');
-                if (bertResponse.ok) {
-                    const bertText = await bertResponse.text();
-                    document.getElementById('bert-text-container').innerHTML = formatTextToHTML(bertText);
-                }
-            } catch(e) { console.log('Using default Bert letter embedded in HTML.'); }
+            } catch(e) { console.log('Using default letter embedded in HTML.'); }
         }
 
         // Helper to convert plain text with line breaks into styled HTML paragraphs
@@ -334,11 +330,14 @@
             let html = '';
             
             for (let i = 0; i < paragraphs.length; i++) {
-                // If it's the very last paragraph, style it specifically as the signature/sign-off
-                if (i === paragraphs.length - 1) {
-                    html += `<p class="serif-font italic text-xl mt-8 pt-8">${paragraphs[i].replace(/\n/g, '<br>')}</p>`;
+                if (i === 0) {
+                    // Make the first paragraph the heading
+                    html += `<h3 class="serif-font text-2xl md:text-3xl mb-8 border-b border-gray-100 pb-4">${paragraphs[i].replace(/\n/g, '<br>')}</h3>`;
+                } else if (i === paragraphs.length - 1) {
+                    // Make the last paragraph the signature
+                    html += `<p class="serif-font italic text-xl mt-8 pt-6 border-t border-gray-50">${paragraphs[i].replace(/\n/g, '<br>')}</p>`;
                 } else {
-                    html += `<p class="leading-relaxed text-gray-700">${paragraphs[i].replace(/\n/g, '<br>')}</p>`;
+                    html += `<p class="leading-relaxed text-gray-700 mb-5">${paragraphs[i].replace(/\n/g, '<br>')}</p>`;
                 }
             }
             return html;
@@ -375,20 +374,20 @@
         const errorMessage = document.getElementById('errorMessage');
         const modalTitle = document.getElementById('modalTitle');
 
-        function openModal(person) {
-            currentTarget = person;
-            modalTitle.innerText = `Unlock Letter for ${person.charAt(0).toUpperCase() + person.slice(1)}`;
+        function openModal() {
+            modalTitle.innerText = `Unlock Letter`;
             
             // Reset states
             yearInput.value = '';
             yearInput.classList.remove('shake-animation');
             errorMessage.style.opacity = '0';
             
-            // Hide all letters, show form
-            document.querySelectorAll('.letter-content').forEach(el => {
-                el.classList.remove('active');
-                setTimeout(() => el.style.display = 'none', 500); // Wait for fade out
-            });
+            // Hide letter, show form
+            const letterContent = document.getElementById('letter-combined');
+            if(letterContent) {
+                letterContent.classList.remove('active');
+                setTimeout(() => letterContent.style.display = 'none', 500); // Wait for fade out
+            }
             
             passwordForm.style.display = 'block';
             setTimeout(() => {
@@ -433,8 +432,8 @@
             setTimeout(() => {
                 passwordForm.style.display = 'none';
                 
-                // Show specific letter
-                const letterEl = document.getElementById(`letter-${currentTarget}`);
+                // Show combined letter
+                const letterEl = document.getElementById('letter-combined');
                 letterEl.style.display = 'block';
                 
                 // Trigger reflow
