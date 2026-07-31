@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sue & Bert | Since 1981</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #111111;
+            --paper: #ffffff;
+        }
+
+        body {
+            background-color: var(--paper);
+            color: var(--ink);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, .serif-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Fluid Typography & Spacing */
+        .title-text {
+            font-size: clamp(3rem, 8vw, 6rem);
+            line-height: 1.1;
+        }
+
+        .subtitle-text {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            letter-spacing: 0.1em;
+        }
+
+        /* Image Styling to ensure ink-like appearance */
+        .sketch-image {
+            filter: grayscale(100%) contrast(110%);
+            mix-blend-mode: multiply; /* This makes the white background of the sketch completely transparent/seamless */
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .sketch-container:hover .sketch-image {
+            transform: scale(1.03);
+        }
+
+        /* Minimalist Input Box */
+        .ink-input {
+            border: none;
+            border-bottom: 1px solid var(--ink);
+            background: transparent;
+            text-align: center;
+            font-size: 1.25rem;
+            padding: 0.5rem;
+            width: 100%;
+            max-width: 250px;
+            outline: none;
+            letter-spacing: 0.2em;
+            transition: border-color 0.3s ease;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .ink-input::placeholder {
+            letter-spacing: 0.05em;
+            font-size: 1rem;
+            color: #9ca3af;
+            font-family: 'Inter', sans-serif;
+            font-style: italic;
+        }
+
+        .ink-input:focus {
+            border-bottom: 2px solid var(--ink);
+        }
+
+        /* Custom minimal button */
+        .ink-btn {
+            position: relative;
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            border: 1px solid var(--ink);
+            background: transparent;
+            color: var(--ink);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.875rem;
+            cursor: pointer;
+            overflow: hidden;
+            transition: color 0.4s ease;
+        }
+
+        .ink-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--ink);
+            z-index: -1;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .ink-btn:hover {
+            color: var(--paper);
+        }
+
+        .ink-btn:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* Animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+        .delay-400 { transition-delay: 400ms; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        .shake-animation {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes drawLine {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .line-drawing {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawLine 3s ease-in-out forwards;
+        }
+
+        /* Modal styling */
+        .modal-overlay {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Letter reveal animation */
+        .letter-content {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .letter-content.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+
+    <main class="flex-grow">
+        <!-- Hero Section -->
+        <section class="min-h-screen flex flex-col items-center justify-center px-6 relative">
+            <!-- Decorative SVG Line -->
+            <div class="absolute top-0 w-px h-32 bg-black opacity-20 fade-up"></div>
+            
+            <div class="text-center mt-24 max-w-4xl mx-auto space-y-6">
+                <p class="subtitle-text fade-up uppercase text-gray-500 tracking-widest">Celebrating 45 Years</p>
+                <h1 class="title-text fade-up delay-100 font-medium">Sue & Bert</h1>
+                
+                <div class="fade-up delay-200 py-8">
+                    <span class="serif-font italic text-2xl">August 1, 1981</span>
+                </div>
+            </div>
+
+            <!-- Scroll indicator -->
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 fade-up delay-400 flex flex-col items-center">
+                <span class="text-xs uppercase tracking-widest mb-2 text-gray-400">Scroll</span>
+                <div class="w-px h-16 bg-black opacity-20"></div>
+            </div>
+        </section>
+
+        <!-- First Sketch Section -->
+        <section class="py-24 px-6 max-w-4xl mx-auto flex justify-center">
+            <div class="sketch-container fade-up w-full flex flex-col items-center">
+                <!-- Removed borders and shadows for a seamless ink-on-paper look -->
+                <img src="https://i.imgur.com/y8IixWT.jpeg" alt="Sketch of Sue and Bert" class="sketch-image w-full h-auto max-w-lg object-contain" onerror="this.onerror=null; this.src='https://placehold.co/600x800/white/black?text=First+Sketch';">
+            </div>
+        </section>
+
+        <!-- Letters Section -->
+        <section class="py-24 px-6 flex flex-col items-center justify-center relative z-10">
+            <svg class="w-8 h-8 mb-8 text-gray-300 fade-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+
+            <h2 class="serif-font text-3xl md:text-4xl mb-12 fade-up text-center">Words for You Both</h2>
+            
+            <div class="flex flex-col sm:flex-row gap-6 w-full max-w-[16rem] sm:max-w-none justify-center items-center fade-up delay-100">
+                <button onclick="openModal('sue')" class="ink-btn w-full sm:w-56 text-center">
+                    Letter for Sue
+                </button>
+                <button onclick="openModal('bert')" class="ink-btn w-full sm:w-56 text-center">
+                    Letter for Bert
+                </button>
+            </div>
+        </section>
+
+        <!-- Second Sketch Section -->
+        <section class="py-24 px-6 max-w-4xl mx-auto flex justify-center mb-12">
+            <div class="sketch-container fade-up w-full flex flex-col items-center">
+                <!-- Removed borders and shadows for a seamless ink-on-paper look -->
+                <img src="https://i.imgur.com/fu5iYGJ.jpeg" alt="Sketch of Bert and Sue" class="sketch-image w-full h-auto max-w-lg object-contain" onerror="this.onerror=null; this.src='https://placehold.co/600x800/white/black?text=Second+Sketch';">
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-16 text-center flex flex-col items-center space-y-4 fade-up">
+        <p class="text-sm text-gray-400 tracking-widest uppercase">Celebrating 45 Years</p>
+        <p class="serif-font italic text-2xl">August 1, 2026</p>
+    </footer>
+
+    <!-- Password Modal -->
+    <div id="passwordModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center px-6">
+        <div class="bg-white p-10 md:p-16 max-w-lg w-full text-center shadow-2xl relative border border-gray-200">
+            <!-- Close Button -->
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-400 hover:text-black transition-colors">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+
+            <!-- Password Entry Form -->
+            <div id="passwordForm" class="space-y-8 py-8">
+                <svg class="w-8 h-8 mx-auto text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <h3 class="serif-font text-2xl" id="modalTitle">Unlock Letter</h3>
+                <div class="relative">
+                    <input type="password" id="yearInput" class="ink-input" placeholder="enter the year" autocomplete="off">
+                    <p id="errorMessage" class="absolute -bottom-6 left-0 w-full text-red-500 text-xs tracking-wider opacity-0 transition-opacity">Incorrect year</p>
+                </div>
+                <button onclick="checkPassword()" class="ink-btn mt-4">Read</button>
+            </div>
+
+            <!-- Letter for Sue -->
+            <div id="letter-sue" class="letter-content text-left space-y-6">
+                <h3 class="serif-font text-3xl mb-8 border-b border-gray-100 pb-4">Dearest Sue,</h3>
+                <div id="sue-text-container">
+                    <p class="leading-relaxed text-gray-700">
+                        It feels like just yesterday we were celebrating your special day on August 1, 1981. Over the past forty-five years, I've watched you build a life full of warmth, resilience, and profound love. Your steadfast heart has not only anchored your marriage but also brought so much joy to everyone around you.
+                    </p>
+                    <p class="leading-relaxed text-gray-700">
+                        You have always been such a beacon of light and a wonderful friend. As you celebrate this beautiful Sapphire anniversary, I hope you take a moment to look back at the incredible legacy of love you and Bert have created together.
+                    </p>
+                    <p class="serif-font italic text-xl mt-8 pt-8">With so much love,<br>Your Friend</p>
+                </div>
+            </div>
+
+            <!-- Letter for Bert -->
+            <div id="letter-bert" class="letter-content text-left space-y-6">
+                <h3 class="serif-font text-3xl mb-8 border-b border-gray-100 pb-4">Dear Bert,</h3>
+                <div id="bert-text-container">
+                    <p class="leading-relaxed text-gray-700">
+                        Forty-five years! I have always admired the way you look at Sue, a gaze that hasn't changed since that summer day in 1981. You have been a pillar of strength, a caring partner, and a source of endless laughter for your family and your friends. 
+                    </p>
+                    <p class="leading-relaxed text-gray-700">
+                        Witnessing your journey together has been an absolute privilege. Thank you for being such a great friend and for showing us all what a true partnership looks like. Happy 45th Anniversary, here is to celebrating a truly remarkable man.
+                    </p>
+                    <p class="serif-font italic text-xl mt-8 pt-8">Warmly,<br>Your Friend</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Store current active letter target
+        let currentTarget = '';
+        const correctYear = '1981';
+
+        // Attempt to load external text files if they exist on the server (like GitHub Pages)
+        async function loadExternalLetters() {
+            try {
+                // Look for sue.txt in the same folder
+                const sueResponse = await fetch('sue.txt');
+                if (sueResponse.ok) {
+                    const sueText = await sueResponse.text();
+                    document.getElementById('sue-text-container').innerHTML = formatTextToHTML(sueText);
+                }
+            } catch(e) { console.log('Using default Sue letter embedded in HTML.'); }
+
+            try {
+                // Look for bert.txt in the same folder
+                const bertResponse = await fetch('bert.txt');
+                if (bertResponse.ok) {
+                    const bertText = await bertResponse.text();
+                    document.getElementById('bert-text-container').innerHTML = formatTextToHTML(bertText);
+                }
+            } catch(e) { console.log('Using default Bert letter embedded in HTML.'); }
+        }
+
+        // Helper to convert plain text with line breaks into styled HTML paragraphs
+        function formatTextToHTML(text) {
+            // Split the text by double newlines to create separate paragraphs
+            const paragraphs = text.split('\n\n').filter(p => p.trim() !== '');
+            let html = '';
+            
+            for (let i = 0; i < paragraphs.length; i++) {
+                // If it's the very last paragraph, style it specifically as the signature/sign-off
+                if (i === paragraphs.length - 1) {
+                    html += `<p class="serif-font italic text-xl mt-8 pt-8">${paragraphs[i].replace(/\n/g, '<br>')}</p>`;
+                } else {
+                    html += `<p class="leading-relaxed text-gray-700">${paragraphs[i].replace(/\n/g, '<br>')}</p>`;
+                }
+            }
+            return html;
+        }
+        
+        // Load external letters on startup
+        loadExternalLetters();
+
+        // --- Intersection Observer for Scroll Animations ---
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Optional: Stop observing once animated
+                    // observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-up').forEach(element => {
+            observer.observe(element);
+        });
+
+        // --- Modal & Password Logic ---
+        const modal = document.getElementById('passwordModal');
+        const passwordForm = document.getElementById('passwordForm');
+        const yearInput = document.getElementById('yearInput');
+        const errorMessage = document.getElementById('errorMessage');
+        const modalTitle = document.getElementById('modalTitle');
+
+        function openModal(person) {
+            currentTarget = person;
+            modalTitle.innerText = `Unlock Letter for ${person.charAt(0).toUpperCase() + person.slice(1)}`;
+            
+            // Reset states
+            yearInput.value = '';
+            yearInput.classList.remove('shake-animation');
+            errorMessage.style.opacity = '0';
+            
+            // Hide all letters, show form
+            document.querySelectorAll('.letter-content').forEach(el => {
+                el.classList.remove('active');
+                setTimeout(() => el.style.display = 'none', 500); // Wait for fade out
+            });
+            
+            passwordForm.style.display = 'block';
+            setTimeout(() => {
+                passwordForm.style.opacity = '1';
+                passwordForm.style.transform = 'translateY(0)';
+            }, 50);
+
+            modal.classList.add('active');
+            
+            // Auto focus on input after transition
+            setTimeout(() => yearInput.focus(), 500);
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        function checkPassword() {
+            const val = yearInput.value.trim();
+            if (val === correctYear) {
+                // Success
+                revealLetter();
+            } else {
+                // Error
+                yearInput.classList.remove('shake-animation');
+                // Trigger reflow to restart animation
+                void yearInput.offsetWidth;
+                yearInput.classList.add('shake-animation');
+                
+                errorMessage.style.opacity = '1';
+                setTimeout(() => {
+                    errorMessage.style.opacity = '0';
+                }, 3000);
+            }
+        }
+
+        function revealLetter() {
+            // Fade out form
+            passwordForm.style.opacity = '0';
+            passwordForm.style.transform = 'translateY(-20px)';
+            
+            setTimeout(() => {
+                passwordForm.style.display = 'none';
+                
+                // Show specific letter
+                const letterEl = document.getElementById(`letter-${currentTarget}`);
+                letterEl.style.display = 'block';
+                
+                // Trigger reflow
+                void letterEl.offsetWidth;
+                
+                // Add active class for fade in
+                letterEl.classList.add('active');
+            }, 400); // Wait for form fade out
+        }
+
+        // Allow pressing Enter to submit password
+        yearInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        // Close modal on clicking outside the white box
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
