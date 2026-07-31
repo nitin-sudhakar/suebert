@@ -2,11 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- iOS Dark Mode Fixes -->
     <meta name="color-scheme" content="light only">
     <meta name="theme-color" content="#ffffff">
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: dark)">
+    
     <title>Sue & Bert | August 1, 1981</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,12 +22,12 @@
             --paper: #ffffff; 
         }
 
+        /* Force pure white background everywhere to prevent mobile grey overlays */
         html, body, main, .bg-white {
-            background-color: var(--paper) !important;
-            color: var(--ink) !important;
+            background-color: #ffffff !important;
+            color: #111111 !important;
         }
 
-        /* Absolutely force iOS Safari to ignore dark mode background styling */
         @media (prefers-color-scheme: dark) {
             html, body, main, .bg-white {
                 background-color: #ffffff !important;
@@ -32,15 +36,12 @@
         }
 
         body {
-            color: var(--ink);
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
-            /* Hide default cursor on desktop to use custom ink cursor */
             cursor: none; 
         }
 
-        /* Re-enable default cursor on touch devices */
         @media (hover: none) and (pointer: coarse) {
             body { cursor: auto; }
         }
@@ -67,8 +68,8 @@
             border-radius: 50%;
             z-index: 9999;
             pointer-events: none;
-            mix-blend-mode: difference; /* Makes it visible over both black and white */
-            background-color: white; /* Inverted by mix-blend-mode to look black */
+            mix-blend-mode: difference; 
+            background-color: white; 
             transition: width 0.3s, height 0.3s, background-color 0.3s;
         }
 
@@ -85,7 +86,6 @@
             transition: width 0.2s ease-out, height 0.2s ease-out, transform 0.1s;
         }
 
-        /* Hover states for the cursor */
         body.cursor-hover .cursor-dot {
             width: 0px;
             height: 0px;
@@ -98,7 +98,6 @@
             backdrop-filter: invert(1);
         }
 
-        /* Hide custom cursor on mobile */
         @media (max-width: 768px) {
             .cursor-dot, .cursor-outline { display: none; }
         }
@@ -115,14 +114,12 @@
             width: 100%;
             display: flex;
             justify-content: center;
-            /* Give it an explicit white background so iOS Safari has a solid canvas to blend the ink against */
-            background-color: #ffffff;
+            background-color: #ffffff; /* iOS Safari Hard-White Background Fix */
         }
 
         .sketch-image {
             filter: grayscale(100%) contrast(120%) brightness(105%);
             mix-blend-mode: multiply;
-            /* Smooth transition for when the mouse leaves */
             transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); 
             will-change: transform;
         }
@@ -132,7 +129,6 @@
             border-bottom: 1px solid var(--ink);
             background: transparent;
             text-align: center;
-            font-size: 1.25rem;
             padding: 0.5rem;
             width: 100%;
             max-width: 250px;
@@ -188,7 +184,7 @@
         .fade-up {
             opacity: 0;
             transform: translateY(50px);
-            filter: blur(10px); /* Ink unblurring effect */
+            filter: blur(10px); 
             transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), 
                         transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), 
                         filter 1.2s cubic-bezier(0.25, 1, 0.5, 1);
@@ -206,13 +202,11 @@
             transition: height 1.5s cubic-bezier(0.25, 1, 0.5, 1);
         }
         .draw-line.visible {
-            height: 8rem; /* equivalent to h-32 */
+            height: 8rem;
         }
 
         .delay-100 { transition-delay: 100ms; }
         .delay-200 { transition-delay: 200ms; }
-        .delay-300 { transition-delay: 300ms; }
-        .delay-400 { transition-delay: 400ms; }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -269,18 +263,14 @@
 </head>
 <body class="antialiased flex flex-col min-h-screen bg-white">
 
-    <!-- Custom Cursors -->
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
 
     <main class="flex-grow overflow-hidden w-full bg-white">
-        <!-- Hero Section -->
         <section class="w-full min-h-[100dvh] flex flex-col items-center justify-center relative">
-            <!-- Top Line (Absolutely Centered) -->
             <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1px] bg-black opacity-20 draw-line fade-up"></div>
             
             <div class="text-center max-w-4xl mx-auto space-y-6 relative z-10 px-6 mt-12">
-                <!-- Optical alignment fix: translate-x gently nudges the text to offset the right-heavy tracking -->
                 <p class="subtitle-text fade-up uppercase text-gray-500 tracking-widest translate-x-[0.05em]">Celebrating 45 Years</p>
                 <h1 class="title-text fade-up delay-100 font-medium tracking-tight">Sue & Bert</h1>
                 
@@ -290,7 +280,6 @@
             </div>
         </section>
 
-        <!-- Sketch 1 Section -->
         <section class="w-full py-20 md:py-32 px-6 flex justify-center">
             <div class="parallax-wrapper w-full max-w-4xl" data-speed="0.1">
                 <div class="sketch-container fade-up w-full">
@@ -299,8 +288,7 @@
             </div>
         </section>
 
-        <!-- Button Section -->
-        <section class="w-full pt-20 pb-[15rem] md:pt-32 md:pb-[25rem] px-6 flex flex-col items-center justify-center relative z-10">
+        <section class="w-full pt-20 pb-40 md:pt-32 md:pb-64 px-6 flex flex-col items-center justify-center relative z-10">
             <svg class="w-8 h-8 mb-10 text-gray-300 fade-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
@@ -314,7 +302,6 @@
             </div>
         </section>
 
-        <!-- Sketch 2 Section -->
         <section class="w-full py-20 md:py-32 px-6 flex justify-center mb-8">
             <div class="parallax-wrapper w-full max-w-4xl" data-speed="0.15">
                 <div class="sketch-container fade-up w-full">
@@ -332,15 +319,14 @@
     <div id="passwordModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 cursor-auto">
         <div class="modal-content bg-white p-6 sm:p-10 md:p-14 max-w-2xl w-full text-center shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] relative border border-gray-100 max-h-[90vh] overflow-y-auto modal-scroll">
             
-            <button onclick="closeModal()" class="interactive-hover absolute top-2 right-2 sm:top-4 sm:right-4 md:top-6 md:right-6 text-gray-400 hover:text-black transition-colors z-10 bg-white/90 backdrop-blur-sm rounded-full p-3">
+            <button onclick="closeModal()" class="interactive-hover absolute top-2 right-2 sm:top-4 sm:right-4 md:top-6 md:right-6 text-gray-400 hover:text-black transition-colors z-10 bg-white/90 backdrop-blur-sm rounded-full p-4">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
             </button>
 
-            <!-- Password Entry Form -->
-            <div id="passwordForm" class="space-y-10 py-8 md:py-12 pb-12">
+            <div id="passwordForm" class="space-y-10 py-8 md:py-12 pb-16">
                 <svg class="w-8 h-8 mx-auto text-black opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -350,7 +336,6 @@
                 </div>
                 
                 <div class="relative max-w-xs mx-auto mt-8">
-                    <!-- Changed text-sm to text-[16px] for mobile to prevent iOS Safari auto-zoom on focus, while keeping it small on md screens -->
                     <input type="password" id="yearInput" class="ink-input interactive-hover text-[16px] md:text-sm placeholder:text-[16px] md:placeholder:text-sm" placeholder="enter the year" autocomplete="off">
                     <p id="errorMessage" class="absolute -bottom-8 left-0 w-full text-red-500 text-xs tracking-wider opacity-0 transition-opacity">Incorrect year</p>
                 </div>
@@ -358,26 +343,16 @@
                 <button onclick="checkPassword()" class="ink-btn interactive-hover mt-8">Read</button>
             </div>
 
-            <!-- Single Letter Container -->
             <div id="letter-combined" class="letter-content text-left py-4">
                 <div id="letter-text-container">
-                    <!-- Default Letter (Fallback if GitHub fetch fails) -->
                     <h3 class="serif-font text-2xl md:text-3xl mb-8 border-b border-gray-100 pb-4">Dear Sue & Bert,</h3>
-                    
                     <p class="leading-relaxed text-gray-700 mb-6">Happy Anniversary!</p>
-                    
                     <p class="leading-relaxed text-gray-700 mb-6">Today is a wonderful day to celebrate the two of you and the beautiful life you have built together. Watching your partnership is a sweet reminder of what true love and companionship look like.</p>
-                    
                     <p class="leading-relaxed text-gray-700 mb-6">It is so special that you both fell in love at such a young age. Your whole journey together is such a sweet story. I feel so happy thinking about how the cute young Bert and the beautiful young Sue met, fell in love, and how he gathered the courage to propose by the river. It is lovely to see how those early days grew into the wonderful life you share today.</p>
-                    
                     <p class="leading-relaxed text-gray-700 mb-6">Together, you have created a warm and welcoming home filled with happiness, comfort, and kindness. It is really lovely to see a couple who care so much for each other and bring out the best in one another.</p>
-                    
                     <p class="leading-relaxed text-gray-700 mb-6">People often talk about what makes a place special, and I think it is simply the goodness of the people. You both have such kind and generous hearts. Your natural friendliness makes everyone around you feel comfortable, safe, and at home.</p>
-                    
                     <p class="leading-relaxed text-gray-700 mb-6">You both mean so much to me, and I feel so lucky to have you in my life. You bring so much joy and warmth to the people around you just by being yourselves.</p>
-                    
                     <p class="leading-relaxed text-gray-700 mb-6">Wishing you a very happy anniversary filled with sweet memories, laughter, and many more happy years together.</p>
-                    
                     <p class="serif-font italic text-xl mt-10 pt-6 border-t border-gray-50">With love,<br>Nitin</p>
                 </div>
             </div>
@@ -386,133 +361,130 @@
     </div>
 
     <script>
-        // --- Custom Cursor Logic ---
-        const cursorDot = document.querySelector('.cursor-dot');
-        const cursorOutline = document.querySelector('.cursor-outline');
-        
-        window.addEventListener('mousemove', (e) => {
-            const posX = e.clientX;
-            const posY = e.clientY;
-            
-            cursorDot.style.left = `${posX}px`;
-            cursorDot.style.top = `${posY}px`;
-            
-            // Add a tiny delay to the outline for a fluid effect
-            setTimeout(() => {
-                cursorOutline.style.left = `${posX}px`;
-                cursorOutline.style.top = `${posY}px`;
-            }, 50);
-        });
-
-        // Add hover effect for interactive elements
-        const interactives = document.querySelectorAll('.interactive-hover, button, input');
-        interactives.forEach(el => {
-            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
-        });
-
-        // --- 3D Image Tilt Effect ---
-        const sketches = document.querySelectorAll('.sketch-container');
-        sketches.forEach(container => {
-            const img = container.querySelector('.sketch-image');
-            
-            container.addEventListener('mousemove', (e) => {
-                // Prevent tilt on touch devices so they don't get stuck on tap
-                if (window.matchMedia("(hover: none)").matches) return;
-                
-                // Calculate mouse position relative to the center of the image
-                const rect = container.getBoundingClientRect();
-                const x = e.clientX - rect.left; // x position within the element.
-                const y = e.clientY - rect.top;  // y position within the element.
-                
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                
-                // Calculate rotation (max 10 degrees)
-                const rotateX = ((y - centerY) / centerY) * -10;
-                const rotateY = ((x - centerX) / centerX) * 10;
-                
-                img.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
-            });
-            
-            container.addEventListener('mouseleave', () => {
-                if (window.matchMedia("(hover: none)").matches) return;
-                // Reset transform when mouse leaves
-                img.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
+        // Provide a failsafe in case JS has an error or takes too long to load
+        // This ensures the page never stays fully blank/white
+        window.addEventListener('error', function() {
+            document.querySelectorAll('.fade-up').forEach(el => {
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+                el.style.filter = 'blur(0)';
             });
         });
 
-        // --- Parallax Scroll Effect ---
-        window.addEventListener('scroll', () => {
-            // Disable parallax on mobile phones to ensure smooth scrolling
-            if (window.innerWidth < 768) return;
-
-            const scrolled = window.pageYOffset;
-            const parallaxWrappers = document.querySelectorAll('.parallax-wrapper');
+        document.addEventListener("DOMContentLoaded", function() {
+            // Cursor Logic
+            const cursorDot = document.querySelector('.cursor-dot');
+            const cursorOutline = document.querySelector('.cursor-outline');
             
-            parallaxWrappers.forEach(wrapper => {
-                const speed = wrapper.getAttribute('data-speed');
-                const yPos = -(scrolled * speed);
-                wrapper.style.transform = `translateY(${yPos}px)`;
+            window.addEventListener('mousemove', (e) => {
+                if(!cursorDot || !cursorOutline) return;
+                const posX = e.clientX;
+                const posY = e.clientY;
+                cursorDot.style.left = `${posX}px`;
+                cursorDot.style.top = `${posY}px`;
+                setTimeout(() => {
+                    cursorOutline.style.left = `${posX}px`;
+                    cursorOutline.style.top = `${posY}px`;
+                }, 50);
             });
-        });
 
-        // --- GitHub External Letter Loader ---
-        async function loadExternalLetter() {
-            try {
-                const response = await fetch('letter.txt');
-                if (response.ok) {
-                    const text = await response.text();
-                    document.getElementById('letter-text-container').innerHTML = formatTextToHTML(text);
-                }
-            } catch(e) { console.log('Using default letter embedded in HTML.'); }
-        }
+            // Hover interactions
+            const interactives = document.querySelectorAll('.interactive-hover, button, input');
+            interactives.forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+            });
 
-        function formatTextToHTML(text) {
-            const paragraphs = text.split('\n\n').filter(p => p.trim() !== '');
-            let html = '';
-            
-            for (let i = 0; i < paragraphs.length; i++) {
-                if (i === 0) {
-                    html += `<h3 class="serif-font text-2xl md:text-3xl mb-8 border-b border-gray-100 pb-4">${paragraphs[i].replace(/\n/g, '<br>')}</h3>`;
-                } else if (i === paragraphs.length - 1) {
-                    html += `<p class="serif-font italic text-xl mt-10 pt-6 border-t border-gray-50">${paragraphs[i].replace(/\n/g, '<br>')}</p>`;
-                } else {
-                    html += `<p class="leading-relaxed text-gray-700 mb-6">${paragraphs[i].replace(/\n/g, '<br>')}</p>`;
+            // 3D Tilt
+            const sketches = document.querySelectorAll('.sketch-container');
+            sketches.forEach(container => {
+                const img = container.querySelector('.sketch-image');
+                container.addEventListener('mousemove', (e) => {
+                    if (window.matchMedia("(hover: none)").matches) return;
+                    const rect = container.getBoundingClientRect();
+                    const x = e.clientX - rect.left; 
+                    const y = e.clientY - rect.top;  
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -10;
+                    const rotateY = ((x - centerX) / centerX) * 10;
+                    img.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+                });
+                container.addEventListener('mouseleave', () => {
+                    if (window.matchMedia("(hover: none)").matches) return;
+                    img.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
+                });
+            });
+
+            // Parallax
+            window.addEventListener('scroll', () => {
+                if (window.innerWidth < 768) return;
+                const scrolled = window.pageYOffset;
+                const parallaxWrappers = document.querySelectorAll('.parallax-wrapper');
+                parallaxWrappers.forEach(wrapper => {
+                    const speed = wrapper.getAttribute('data-speed');
+                    const yPos = -(scrolled * speed);
+                    wrapper.style.transform = `translateY(${yPos}px)`;
+                });
+            });
+
+            async function loadExternalLetter() {
+                try {
+                    const response = await fetch('letter.txt');
+                    if (response.ok) {
+                        const text = await response.text();
+                        document.getElementById('letter-text-container').innerHTML = formatTextToHTML(text);
+                    }
+                } catch(e) {
+                    console.log('Using default letter embedded in HTML.');
                 }
             }
-            return html;
-        }
-        
-        loadExternalLetter();
 
-        // --- Intersection Observer for Scroll Animations ---
-        const observerOptions = {
-            root: null,
-            rootMargin: '-50px',
-            threshold: 0.1
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+            function formatTextToHTML(text) {
+                const paragraphs = text.split('\n\n').filter(p => p.trim() !== '');
+                let html = '';
+                for (let i = 0; i < paragraphs.length; i++) {
+                    if (i === 0) {
+                        html += `<h3 class="serif-font text-2xl md:text-3xl mb-8 border-b border-gray-100 pb-4">${paragraphs[i].replace(/\n/g, '<br>')}</h3>`;
+                    } else if (i === paragraphs.length - 1) {
+                        html += `<p class="serif-font italic text-xl mt-10 pt-6 border-t border-gray-50">${paragraphs[i].replace(/\n/g, '<br>')}</p>`;
+                    } else {
+                        html += `<p class="leading-relaxed text-gray-700 mb-6">${paragraphs[i].replace(/\n/g, '<br>')}</p>`;
+                    }
                 }
-            });
-        }, observerOptions);
+                return html;
+            }
+            
+            loadExternalLetter();
 
-        document.querySelectorAll('.fade-up, .draw-line').forEach(element => {
-            observer.observe(element);
+            // Scroll animations (Failsafe margin updated)
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px', 
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-up, .draw-line').forEach(element => {
+                observer.observe(element);
+            });
         });
 
-        // --- Modal & Password Logic ---
         const correctYear = '1981';
-        const modal = document.getElementById('passwordModal');
-        const passwordForm = document.getElementById('passwordForm');
-        const yearInput = document.getElementById('yearInput');
-        const errorMessage = document.getElementById('errorMessage');
-
+        
         function openModal() {
+            const yearInput = document.getElementById('yearInput');
+            const errorMessage = document.getElementById('errorMessage');
+            const passwordForm = document.getElementById('passwordForm');
+            const modal = document.getElementById('passwordModal');
+            
             yearInput.value = '';
             yearInput.classList.remove('shake-animation');
             errorMessage.style.opacity = '0';
@@ -531,27 +503,33 @@
 
             modal.classList.add('active');
             
-            // Re-enable default cursor for the modal area so inputs work naturally on all devices
             document.body.style.cursor = 'auto';
-            document.querySelector('.cursor-dot').style.opacity = '0';
-            document.querySelector('.cursor-outline').style.opacity = '0';
+            const dot = document.querySelector('.cursor-dot');
+            const outline = document.querySelector('.cursor-outline');
+            if(dot) dot.style.opacity = '0';
+            if(outline) outline.style.opacity = '0';
             
             setTimeout(() => yearInput.focus(), 600);
         }
 
         function closeModal() {
+            const modal = document.getElementById('passwordModal');
             modal.classList.remove('active');
             
-            // Restore custom cursor
             setTimeout(() => {
                 document.body.style.cursor = 'none';
-                document.querySelector('.cursor-dot').style.opacity = '1';
-                document.querySelector('.cursor-outline').style.opacity = '1';
+                const dot = document.querySelector('.cursor-dot');
+                const outline = document.querySelector('.cursor-outline');
+                if(dot) dot.style.opacity = '1';
+                if(outline) outline.style.opacity = '1';
             }, 400);
         }
 
         function checkPassword() {
+            const yearInput = document.getElementById('yearInput');
+            const errorMessage = document.getElementById('errorMessage');
             const val = yearInput.value.trim();
+            
             if (val === correctYear) {
                 revealLetter();
             } else {
@@ -567,6 +545,7 @@
         }
 
         function revealLetter() {
+            const passwordForm = document.getElementById('passwordForm');
             passwordForm.style.opacity = '0';
             passwordForm.style.transform = 'scale(0.95) translateY(-20px)';
             
@@ -580,14 +559,14 @@
             }, 600); 
         }
 
-        yearInput.addEventListener('keypress', function(e) {
+        document.getElementById('yearInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 checkPassword();
             }
         });
 
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
+        document.getElementById('passwordModal').addEventListener('click', function(e) {
+            if (e.target === this) {
                 closeModal();
             }
         });
