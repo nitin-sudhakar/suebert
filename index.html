@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="light">
+    <meta name="color-scheme" content="light only">
     <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: dark)">
     <title>Sue & Bert | August 1, 1981</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,11 +15,20 @@
     <style>
         :root {
             --ink: #111111;
-            --paper: #ffffff;
+            --paper: #ffffff; 
         }
 
-        html, body {
-            background-color: #ffffff !important;
+        html, body, main, .bg-white {
+            background-color: var(--paper) !important;
+            color: var(--ink) !important;
+        }
+
+        /* Absolutely force iOS Safari to ignore dark mode background styling */
+        @media (prefers-color-scheme: dark) {
+            html, body, main, .bg-white {
+                background-color: #ffffff !important;
+                color: #111111 !important;
+            }
         }
 
         body {
@@ -105,6 +115,8 @@
             width: 100%;
             display: flex;
             justify-content: center;
+            /* Give it an explicit white background so iOS Safari has a solid canvas to blend the ink against */
+            background-color: #ffffff;
         }
 
         .sketch-image {
